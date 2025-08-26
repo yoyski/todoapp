@@ -12,7 +12,7 @@ function App() {
 
   const fetchTodos = async () => {
     try {
-      const res = await axios.get(`/api/TodoList/`);
+      const res = await axios.get(`${API_BASE}/TodoList/`);
       setTodoList(res.data);
     } catch (error) {
       console.error("Error fetching todo list:", error);
@@ -28,7 +28,7 @@ function App() {
     if (!title) return;
 
     try {
-      const res = await axios.post(`/api/TodoList/`, { title });
+      const res = await axios.post(`${API_BASE}/TodoList/`, { title });
       setTodoList([...todoList, res.data]);
       setTitle("");
     } catch (error) {
@@ -38,7 +38,7 @@ function App() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/TodoList/${id}`);
+      await axios.delete(`${API_BASE}/TodoList/${id}`);
       setTodoList(todoList.filter((todo) => todo.id !== id));
     } catch (error) {
       console.error("Error deleting todo:", error);
@@ -51,7 +51,7 @@ function App() {
   };
 
   const handleSave = async (id) => {
-    await axios.put(`/api/TodoList/${id}`, { title: editTitle });
+    await axios.put(`${API_BASE}/TodoList/${id}`, { title: editTitle });
     setEditingId(null);
     setEditTitle("");
     fetchTodos();
