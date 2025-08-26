@@ -3,17 +3,20 @@ import db from "../model/todoList.model.js";
 export const addTodoList = async (req, res) => {
   const { title } = req.body;
 
-  console.log(title);
+  console.log("Incoming title:", title);
 
   db.query("INSERT INTO todo (title) VALUES (?)", [title], (err, results) => {
-    if (err) return res.status(500).json({ error: "Database error" });
+    if (err) {
+      console.error("Database Insert Error:", err); // 👈 log full error
+      return res.status(500).json({ error: err.message }); // send back actual DB error
+    }
     res.json({
       id: results.insertId,
       title,
     });
   });
-
 };
+
 
 export const getAllTodoList = async (req, res) => {
   db.query("SELECT * FROM todo", (err, results) => {
