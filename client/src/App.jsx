@@ -8,7 +8,7 @@ function App() {
   const [editTitle, setEditTitle] = useState("");
 
   // ✅ Use your deployed backend URL
-  const API_BASE = "https://todoapp-27hq.onrender.com";
+  const API_BASE = "https://todoapp-7z10.onrender.com";
 
   const fetchTodos = async () => {
     try {
