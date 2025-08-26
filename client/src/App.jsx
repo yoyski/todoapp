@@ -2,16 +2,17 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 function App() {
-  // ----------------- State Management -----------------
-  const [todoList, setTodoList] = useState([]);       // Stores all todos
-  const [title, setTitle] = useState("");             // Stores new todo input
-  const [editingId, setEditingId] = useState(null);   // Tracks which todo is being edited
-  const [editTitle, setEditTitle] = useState("");     // Stores text for editing
+  const [todoList, setTodoList] = useState([]);
+  const [title, setTitle] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
 
-  // ----------------- Fetch Todos -----------------
+  // ✅ Use your deployed backend URL
+  const API_BASE = "https://todoapp-27hq.onrender.com";
+
   const fetchTodos = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/TodoList/");
+      const res = await axios.get(`/api/TodoList/`);
       setTodoList(res.data);
     } catch (error) {
       console.error("Error fetching todo list:", error);
@@ -19,16 +20,15 @@ function App() {
   };
 
   useEffect(() => {
-    fetchTodos(); // Load todos on component mount
+    fetchTodos();
   }, []);
 
-  // ----------------- Add Todo -----------------
   const addTodo = async (e) => {
     e.preventDefault();
     if (!title) return;
 
     try {
-      const res = await axios.post("http://localhost:5000/TodoList/", { title });
+      const res = await axios.post(`/api/TodoList/`, { title });
       setTodoList([...todoList, res.data]);
       setTitle("");
     } catch (error) {
@@ -36,24 +36,22 @@ function App() {
     }
   };
 
-  // ----------------- Delete Todo -----------------
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/TodoList/${id}`);
+      await axios.delete(`/api/TodoList/${id}`);
       setTodoList(todoList.filter((todo) => todo.id !== id));
     } catch (error) {
       console.error("Error deleting todo:", error);
     }
   };
 
-  // ----------------- Edit Todo -----------------
   const handleEditClick = (todo) => {
     setEditingId(todo.id);
     setEditTitle(todo.title);
   };
 
   const handleSave = async (id) => {
-    await axios.put(`http://localhost:5000/TodoList/${id}`, { title: editTitle });
+    await axios.put(`/api/TodoList/${id}`, { title: editTitle });
     setEditingId(null);
     setEditTitle("");
     fetchTodos();
@@ -64,12 +62,10 @@ function App() {
     setEditTitle("");
   };
 
-  // ----------------- UI -----------------
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
       <h1 className="text-4xl font-bold mb-6 text-gray-800">Todo List</h1>
 
-      {/* Add Todo Form */}
       <form onSubmit={addTodo} className="flex gap-2 mb-6 w-full max-w-md">
         <input
           type="text"
@@ -86,7 +82,6 @@ function App() {
         </button>
       </form>
 
-      {/* Todo List */}
       <ul className="w-full max-w-md space-y-3">
         {todoList.map((todo) => (
           <li
@@ -94,7 +89,6 @@ function App() {
             className="flex items-center justify-between bg-white p-4 rounded shadow hover:shadow-lg transition"
           >
             {editingId === todo.id ? (
-              // Edit Mode
               <div className="flex gap-2 w-full">
                 <input
                   type="text"
@@ -116,7 +110,6 @@ function App() {
                 </button>
               </div>
             ) : (
-              // Normal Mode
               <div className="flex justify-between items-center w-full">
                 <span className="text-gray-800">{todo.title}</span>
                 <div className="flex gap-2">
